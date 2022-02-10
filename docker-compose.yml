@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+    # Django server
+    # django:
+    #     build:
+    #         context: .
+    #         dockerfile: images/Dockerfile.django
+    #     # change to use gunicorn
+    #     command: bash -c " python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000" 
+    #     # daphne -b 0.0.0.0 -p 8000 AltelControl.asgi:application"
+    #     env_file:
+    #         - ".env"
+    #     volumes:
+    #         - "./backend/full_stack_dev_project/:/code/"            
+    #     expose:
+    #         - "8000"     
+    #     links: 
+    #         - "mysqldb"
+    #     depends_on:            
+    #         - mysqldb
+    # Database
+    mysqldb:              
+      image: mysql:${MYSQL_VERSION}
+      container_name: ${MYSQL_HOST}
+      env_file:
+        - ".env"      
+      ports:
+        - "3306:3306"      
+      volumes:
+          - "./db/mysql:/var/lib/mysql"
+  
+  
