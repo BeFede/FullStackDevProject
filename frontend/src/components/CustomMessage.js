@@ -10,6 +10,8 @@ const CustomMessage = (props) => {
         case 'error':
             color = "red"
             break;
+        default:
+            color = 'black'
     }
     
     return (

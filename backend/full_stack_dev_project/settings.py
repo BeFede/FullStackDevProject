@@ -15,16 +15,14 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qx67$31ja0z--!gz4pwz_us*)hu(wl==4=w%53=x9x^$lxz!6p'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = os.environ['DEBUG'] == 1
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -39,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'api.apps.ApiConfig',
+    'test_pep8'
 ]
 
 MIDDLEWARE = [
@@ -71,31 +70,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'full_stack_dev_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-"""
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'full_stack_dev_project_database', #os.environ['DATABASE_NAME'],
-    'USER': 'root', # os.environ['MYSQL_USER'],
-    'PASSWORD': 'root', # os.environ['MYSQL_PASSWORD'],
-    'HOST': '127.0.0.1', #os.environ['DATABASE_HOST'],     
-    'CONN_MAX_AGE': 3600,        
-    'PORT': '3306',   
-"""
-
 DATABASES = {
     'default': {        
        'ENGINE': 'django.db.backends.mysql',
        'NAME': os.environ['MYSQL_DATABASE'],
-       'USER': 'root', #os.environ['MYSQL_USER'],
-       'PASSWORD': 'root', #os.environ['MYSQL_PASSWORD'],
-       'HOST': 'mysqldb', # 'os.environ['DATABASE_HOST'],     
+       'USER': os.environ['MYSQL_USER'],
+       'PASSWORD': os.environ['MYSQL_PASSWORD'],
+       'HOST': os.environ['DATABASE_HOST'],     
        'CONN_MAX_AGE': 3600,        
        'PORT': '3306',             
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -116,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
-REDIS_PORT = 6379 # os.environ['REDIS_SERVER']
+REDIS_PORT = os.environ['REDIS_PORT']
 
 CACHES = {
     'default': {
@@ -128,7 +113,14 @@ CACHES = {
     },
 }
 
-CACHE_EXPIRATION = 10 * 60     # 10 minutos
+# 10 minutes
+CACHE_EXPIRATION = 10 * 60  # 
+
+# Configuration pep8 tool checker
+PROJECT_DIR = os.path.dirname(__file__)
+TEST_PEP8_DIRS = [os.path.dirname(PROJECT_DIR), ]
+TEST_PEP8_EXCLUDE = ['migrations', 'venv' ] # Exclude this paths from tests
+TEST_PEP8_IGNORE = ['E128', ] # Ignore this tests
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

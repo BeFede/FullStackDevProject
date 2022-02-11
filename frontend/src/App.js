@@ -1,15 +1,14 @@
 import './App.css';
 import { useState } from 'react';
-import Car from './components/Car'
 import './header.css'
 import './container.css'
-import CustomMessage from './components/CustomMessage'
+import ContentAppPage from './components/ContentAppPage'
+import FormCarPlate from './components/FormCarPlate'
+import CarService from './services/carService'
 
 const App = () => {
-
-    const url = "http://localhost:8000/api/"
-
-    // Another option is use Formik that simplified this code
+        
+    // Define data and hooks to use
     const [valuesForm, setValue] = useState({ plate: ""})
     const [errorMessage, setErrorMessage] = useState("")
     const [car, setCar] = useState({ id: "", plate: "", name: ""})
@@ -17,29 +16,19 @@ const App = () => {
     const submit = e => {
         e.preventDefault()
         
-        if (valuesForm.plate === "") {
-            setErrorMessage("The plate is required")
-            return
-        }
+        // Callback function to execute if the request is success
+        const callback = (car) => {
+            setErrorMessage("")
+            setCar({
+                id: car.id,
+                name: car.name,
+                plate: car.plate,
+            })
 
-        // http requet to get car data from the specified plate 
-        fetch(`${url}cars/${valuesForm.plate}`).then(async res => {            
-            if (res.status === 200){
-                const data = await res.json()
-                setErrorMessage("")
-                setCar({
-                    id: data.content.car.id,
-                    name: data.content.car.name,
-                    plate: data.content.car.plate,
-                })
-                setValue({...valuesForm, plate: ""})
-            } 
-            else if (res.status === 404){
-                setErrorMessage("The car with plate " + valuesForm.plate.toString() + " was not found")
-            } 
-        }).catch(err => {
-            setErrorMessage("Fatal error ")
-        })                
+            // Clean input
+            setValue({...valuesForm, plate: ""})
+        }
+        CarService.getByPlate(valuesForm.plate, callback, setErrorMessage)                       
     }
 
     const handleChange = (e) => {
@@ -48,31 +37,16 @@ const App = () => {
             ...valuesForm,
             [e.target.name]: e.target.value
         })
-
     }
-
+    
     return ( 
         <div>
             <header>
-                <form onSubmit = { submit } >
-                    <input type="text" name="plate" autoComplete='off' value={valuesForm.plate} onChange={handleChange} />
-                    <input type="submit" value="Search" />
-                </form>
-                
+                <FormCarPlate onSubmit={submit} plate={valuesForm.plate} handleChange={handleChange} />                                
             </header>
-            <div className="container" >                                               
-                { errorMessage === "" 
-                    ? ( 
-                        car.plate !== "" ? 
-                            <Car car={car} />  
-                            : 
-                            <CustomMessage type="normal">
-                                Please type the car plate
-                            </CustomMessage>
-                        )
-                    : 
-                    <CustomMessage type="error">{errorMessage}</CustomMessage> 
-                }                                                                               
+            <div className="container" >    
+                <ContentAppPage car={car} errorMessage={errorMessage} ></ContentAppPage>
+                                                                                               
             </div>            
         </div>
     );

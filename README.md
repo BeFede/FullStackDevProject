@@ -21,6 +21,8 @@ The idea of the project is develop an application that can get the model car fro
     ```
     If you want to run on foreground and watch the output, you can run `docker-compose up` without `-d` parameter
 
+    This process may take a few seconds. Please wait until all services are runnning
+
 ## Insert cars in the database  
 -------------
 You have two option to insert car data in the database.
@@ -68,7 +70,7 @@ Open a browser at http://localhost:3000 and insert a car plate
 
 |Image|Tag|Repository|
 |:----|:-----|:----|
-|python|3.8|https://hub.docker.com/_/mysql
+|python|3.8|https://hub.docker.com/_/python
 |node|16.14-alpine|https://hub.docker.com/_/node 
 |mysql|8.0 |https://hub.docker.com/_/mysql 
 |redis|6-alpine |https://hub.docker.com/_/redis 
@@ -76,5 +78,6 @@ Open a browser at http://localhost:3000 and insert a car plate
 
 
 ### Resources:
+-------------
 
 List of car brands and models: https://github.com/matthlavacka/car-list/blob/master/car-list.json
