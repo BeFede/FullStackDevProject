@@ -17,14 +17,14 @@ const App = () => {
     const submit = e => {
         e.preventDefault()
         
-        if (valuesForm.plate == "") {
+        if (valuesForm.plate === "") {
             setErrorMessage("The plate is required")
             return
         }
 
         // http requet to get car data from the specified plate 
         fetch(`${url}cars/${valuesForm.plate}`).then(async res => {            
-            if (res.status == 200){
+            if (res.status === 200){
                 const data = await res.json()
                 setErrorMessage("")
                 setCar({
@@ -55,19 +55,19 @@ const App = () => {
         <div>
             <header>
                 <form onSubmit = { submit } >
-                    <input type="text" name="plate" value={valuesForm.plate} onChange={handleChange} />
+                    <input type="text" name="plate" autoComplete='off' value={valuesForm.plate} onChange={handleChange} />
                     <input type="submit" value="Search" />
                 </form>
                 
             </header>
             <div className="container" >                                               
-                { errorMessage == "" 
+                { errorMessage === "" 
                     ? ( 
-                        car.plate != "" ? 
+                        car.plate !== "" ? 
                             <Car car={car} />  
                             : 
                             <CustomMessage type="normal">
-                                Insert the plate to get the car
+                                Please type the car plate
                             </CustomMessage>
                         )
                     : 

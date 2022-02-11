@@ -1,4 +1,4 @@
-FROM node:16.10.0
+FROM node:16.14-alpine
  
 WORKDIR /code 
 COPY frontend/package.json /code 
