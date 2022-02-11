@@ -1,0 +1,7 @@
+FROM node:16.10.0
+ 
+WORKDIR /code 
+COPY frontend/package.json /code 
+COPY frontend/package-lock.json /code 
+RUN npm install  
+EXPOSE 3000

@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):                
         message_help = 'Numbers of records to insert. Default: 10'
-        parser.add_argument('number', nargs='+', type=int, help=message_help)
+        parser.add_argument('number', nargs='*', type=int, help=message_help)
 
     def handle(self, *args, **options):        
         number = 10
@@ -47,7 +47,10 @@ class Command(BaseCommand):
             model_name = car_json['models'][random_index_model]
             name_car = "{} {}".format(brand_name, model_name)            
             new_car = Car(plate = generate_random_plate(), name = name_car)
-            new_car.save()
-            self.stdout.write(self.style.SUCCESS('The car {} was inserted'.format(new_car)))    
+            try:
+                new_car.save()
+                self.stdout.write(self.style.SUCCESS('The car {} was inserted'.format(new_car)))    
+            except Exception as e:
+                self.stdout.write(self.style.ERROR('The car {} was not inserted. Error: {}'.format(new_car, e)))    
 
         self.stdout.write(self.style.SUCCESS('Successfully inserted data'))

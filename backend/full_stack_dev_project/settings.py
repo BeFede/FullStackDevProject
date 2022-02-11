@@ -29,9 +29,7 @@ ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,20 +74,25 @@ WSGI_APPLICATION = 'full_stack_dev_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+"""
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'full_stack_dev_project_database', #os.environ['DATABASE_NAME'],
+    'USER': 'root', # os.environ['MYSQL_USER'],
+    'PASSWORD': 'root', # os.environ['MYSQL_PASSWORD'],
+    'HOST': '127.0.0.1', #os.environ['DATABASE_HOST'],     
+    'CONN_MAX_AGE': 3600,        
+    'PORT': '3306',   
+"""
 
 DATABASES = {
-    'default': {
-        
-
-
+    'default': {        
        'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'full_stack_dev_project_database', #os.environ['DATABASE_NAME'],
-       'USER': 'root', # os.environ['MYSQL_USER'],
-       'PASSWORD': 'root', # os.environ['MYSQL_PASSWORD'],
-       'HOST': '127.0.0.1', #os.environ['DATABASE_HOST'],     
+       'NAME': os.environ['MYSQL_DATABASE'],
+       'USER': 'root', #os.environ['MYSQL_USER'],
+       'PASSWORD': 'root', #os.environ['MYSQL_PASSWORD'],
+       'HOST': 'mysqldb', # 'os.environ['DATABASE_HOST'],     
        'CONN_MAX_AGE': 3600,        
-       'PORT': '3306',        
+       'PORT': '3306',             
     }
 }
 
@@ -112,6 +115,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REDIS_SERVER = os.environ['REDIS_SERVER']
+REDIS_PORT = 6379 # os.environ['REDIS_SERVER']
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        "LOCATION": "redis://{}:{}".format(REDIS_SERVER, REDIS_PORT),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",            
+        }
+    },
+}
+
+CACHE_EXPIRATION = 10 * 60     # 10 minutos
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

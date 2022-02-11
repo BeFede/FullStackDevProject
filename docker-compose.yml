@@ -1,33 +1,50 @@
 version: '3'
 services:
 
-    # Django server
-    # django:
-    #     build:
-    #         context: .
-    #         dockerfile: images/Dockerfile.django
-    #     # change to use gunicorn
-    #     command: bash -c " python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000" 
-    #     # daphne -b 0.0.0.0 -p 8000 AltelControl.asgi:application"
-    #     env_file:
-    #         - ".env"
-    #     volumes:
-    #         - "./backend/full_stack_dev_project/:/code/"            
-    #     expose:
-    #         - "8000"     
-    #     links: 
-    #         - "mysqldb"
-    #     depends_on:            
-    #         - mysqldb
-    # Database
-    mysqldb:              
-      image: mysql:${MYSQL_VERSION}
-      container_name: ${MYSQL_HOST}
-      env_file:
-        - ".env"      
-      ports:
-        - "3306:3306"      
-      volumes:
-          - "./db/mysql:/var/lib/mysql"
+  # Django server
+  backend:
+    build:
+        context: .
+        dockerfile: dockerfiles/Dockerfile.django
+    container_name: backend    
+    entrypoint: ["./run_server.sh"]    
+    env_file:
+      - ".env"
+    volumes:
+      - "./backend/:/code/"            
+    ports:
+      - "8000:8000"    
+    depends_on:            
+      - mysqldb
+      - redis
   
-  
+  frontend:
+    container_name: frontend
+    build: 
+      context: .
+      dockerfile: dockerfiles/Dockerfile.node
+    volumes:    
+      - './frontend:/code'      
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
+
+  # Database
+  mysqldb:              
+    image: mysql:8.0  
+    container_name: mysqldb    
+    ports:
+      - "3306:3306"    
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}      
+      - MYSQL_DATABASE=${MYSQL_DATABASE}     
+    volumes:
+        - "./.db/mysql:/var/lib/mysql"
+
+  redis:
+    image: "redis:6-alpine"
+    container_name: redis
+    restart: always

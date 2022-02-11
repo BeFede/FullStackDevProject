@@ -1,13 +1,17 @@
 # from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
-
-# Create your views here.
+from full_stack_dev_project import settings
 from api.utils import CustomHttpResponse
 from api.models import Car
 from api.serializers import CarSerializer
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
+CACHE_TTL = getattr(settings, 'CACHE_EXPIRATION', settings.CACHE_EXPIRATION)
 class CarView(APIView):
 
+    # @cache_page(CACHE_TTL)
+    @method_decorator(cache_page(CACHE_TTL))
     def get(self, request, *args, **kwargs):
         response = CustomHttpResponse()
         try:

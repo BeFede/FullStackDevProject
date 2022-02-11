@@ -8,7 +8,7 @@ class Car(models.Model):
         "^[A-Z]{2}[ ]{1}\d{3}[ ]{1}[A-Z]{2}$",
     ]
 
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=50)
     plate = models.CharField(max_length=9, unique=True)    
 
     class Meta:
@@ -26,6 +26,9 @@ class Car(models.Model):
         
         if not self.name or not self.plate:
             raise InvalidDataException("Plate and name are required")
+        
+        if len(self.name) > 50:
+            raise InvalidDataException("The name car is too long. Max lenght: 50")
 
         if not isinstance(self.name, str):
             raise InvalidDataException("The name parameter is not a string")
