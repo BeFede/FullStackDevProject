@@ -37,8 +37,9 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('It will insert {} \
             records'.format(number)))
-        car_list_json = open('api/management/data/car_list.json')
-        cars = json.load(car_list_json)
+        car_list_file = open('api/management/data/car_list.json')
+        cars = json.load(car_list_file)
+        car_list_file.close()
 
         for i in range(number):
             random_index_car = random.randint(0, len(cars) - 1)
@@ -50,10 +51,8 @@ class Command(BaseCommand):
             new_car = Car(plate = generate_random_plate(), name = name_car)
             try:
                 new_car.save()
-                self.stdout.write(self.style.SUCCESS('The car {} was \
-                    inserted'.format(new_car)))
+                self.stdout.write(self.style.SUCCESS('The car {} was inserted'.format(new_car)))
             except Exception as e:
-                self.stdout.write(self.style.ERROR('The car {} was not inserted. \
-                    Error: {}'.format(new_car, e)))
+                self.stdout.write(self.style.ERROR('The car {} was not inserted. Error: {}'.format(new_car, e)))
 
         self.stdout.write(self.style.SUCCESS('Successfully inserted data'))
